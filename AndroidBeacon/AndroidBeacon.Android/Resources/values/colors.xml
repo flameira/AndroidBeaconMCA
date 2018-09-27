@@ -1,0 +1,16 @@
+﻿<resources>
+	<!--
+	<color name="primary">#2196F3</color>
+	<color name="primaryDark">#1976D2</color>
+	-->
+	<color name="primary">#3580c7</color>
+	<color name="primaryDark">#3580c7</color>
+	<!--<color name="accent">#FFC107</color>-->
+	<color name="accent">#2196F3</color>
+	<!-- fix the white screen when launching the app -->
+	<!--<color name="window_background">#F5F5F5</color>-->
+	<color name="window_background_loading">#3580c7</color>
+	<color name="window_background">#F5F5F5</color>
+  
+  <color name="launcher_background">#2196F3</color>
+</resources>
