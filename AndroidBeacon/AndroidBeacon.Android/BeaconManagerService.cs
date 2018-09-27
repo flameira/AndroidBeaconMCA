@@ -43,15 +43,19 @@
         public static int BEACON_LISTENER_TIME_IN_SECONDS = 60 * 5; // 5 minutes
 #endif
 
+        private static readonly string LOG_FILENAME = "BeaconManagerService";
+        private LogService logService;
+
         public BeaconManagerService(Context ctx)
         {
             ApplicationContext = ctx;
             _monitorNotifier = new MonitorNotifier();
             _rangeNotifier = new RangeNotifier();
+            logService = new LogService();
 
             InitializeService();
 
-            LocationManagerService =  new LocationManagerService(ApplicationContext);
+            logService.WriteToLog(LOG_FILENAME, "Contructor");
         }
 
         public BeaconManager BeaconManagerImpl
@@ -95,6 +99,8 @@
 
             isBinded = true;
 
+            logService.WriteToLog(LOG_FILENAME, "InitializeBeaconManager");
+
             return bm;
         }
 
@@ -113,6 +119,8 @@
 
             Log.Debug("FLBEACON", "Stop Request Updates from Beacon");
             LocationManagerService.StopRequestLocationUpdates();
+
+            logService.WriteToLog(LOG_FILENAME, "ExitedRegion");
         }
 
         private void EnteredRegion(object sender, MonitorEventArgs e)
@@ -125,6 +133,8 @@
             
             Log.Debug("FLBEACON", "Start Request Updates from Beacon");
             LocationManagerService.RequestLocationUpdates();
+
+            logService.WriteToLog(LOG_FILENAME, "EnteredRegion");
         }
 
         private void RangingBeaconsInRegion(object sender, RangeEventArgs e)
@@ -168,6 +178,8 @@
 
             if (handler != null)
                 BeaconRanged(this, beaconData);
+
+            logService.WriteToLog(LOG_FILENAME, "OnBeaconRanged");
         }
 
         #endregion
@@ -199,6 +211,12 @@
                 isStartMonitoringRequested = false;
                 StartMonitoring(uuid, major, minor, identifier);
             }
+        }
+
+        public BeaconManagerService AddLocationPovider(LocationManagerService location)
+        {
+            LocationManagerService = location;
+            return this;
         }
 
         public void StartMonitoring(string uuid, double major, double minor, string identifier)
@@ -247,6 +265,8 @@
             IsMonitoringBeacons = true;
 
             Log.Debug("FLBEACON", "StartMonitoring");
+
+            logService.WriteToLog(LOG_FILENAME, "StartMonitoring");
         }
 
         public void StopMonitoring()
@@ -261,6 +281,8 @@
             isBinded = false;
 
             IsMonitoringBeacons = false;
+
+            logService.WriteToLog(LOG_FILENAME, "StopMonitoring");
         }
 
         /// <summary>

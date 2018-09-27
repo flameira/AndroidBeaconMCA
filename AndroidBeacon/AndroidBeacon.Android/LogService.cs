@@ -140,22 +140,23 @@ namespace AndroidBeacon.Droid
 
         public void WriteToLog(string fileName, string message)
         {
-            lock (logLock)
-            {
-                try
-                {
-                    var filename = Path.Combine(logsDirectory,
-                        fileName + "_" + DateTime.Today.ToString("yyyyMMdd") + ".txt");
+            //lock (logLock)
+            //{
+            //    try
+            //    {
+            //        var filename = Path.Combine(logsDirectory,
+            //            fileName + "_" + DateTime.Today.ToString("yyyyMMdd") + ".txt");
 
-                    using (var streamWriter = new StreamWriter(filename, true))
-                    {
-                        var logLine = DateTime.Now + "," + message;
-                        streamWriter.WriteLine(logLine);
-                    }
-                }
-                catch
-                {}
-            }
+            //        using (var streamWriter = new StreamWriter(filename, true))
+            //        {
+            //            var logLine = DateTime.Now + "," + message;
+            //            streamWriter.WriteLine(logLine);
+            //        }
+            //    }
+            //    catch
+            //    {}
+            //}
+            WriteToLogAsync(fileName, message);
         }
 
         public async Task WriteToLogAsync(string fileName, string message)

@@ -36,7 +36,7 @@
 
         protected sealed override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
-            BluetoothLowEnergyAdapter.OnActivityResult(requestCode, resultCode, data);
+            //BluetoothLowEnergyAdapter.OnActivityResult(requestCode, resultCode, data);
         }
 
         protected override void OnCreate(Bundle savedInstanceState)

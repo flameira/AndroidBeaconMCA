@@ -22,11 +22,40 @@
         private Handler _handler;
 
         private BeaconManagerService _beaconManagerService;
-        private BeaconManagerService BeaconManagerService => _beaconManagerService ?? new BeaconManagerService(ApplicationContext);
+        private BeaconManagerService BeaconManagerService 
+        {
+            get
+            {
+                if (_beaconManagerService == null)
+                {
+                    _beaconManagerService = new BeaconManagerService(ApplicationContext);
+                }
+
+                return _beaconManagerService;
+            }
+        } 
+
+        private LocationManagerService _locationManagerService;
+        private LocationManagerService LocationManagerService 
+        {
+            get
+            {
+                if (_locationManagerService == null)
+                {
+                    _locationManagerService = new LocationManagerService(ApplicationContext);
+                }
+
+                return _locationManagerService;
+            }
+        } 
+
+        private static readonly string LOG_FILENAME = "AppService";
+        private LogService logService = new LogService();
 
         public override IBinder OnBind(Intent intent)
         {
             Log.Debug(Tag, "OnBind");
+            logService.WriteToLog(LOG_FILENAME, "OnBind");
             return null;
         }
 
@@ -40,6 +69,8 @@
             _runnable = new Runnable(RunAction);
             Log.Info(Tag, "Start Runing Actions");
             _handler.PostDelayed(_runnable, 15000);
+
+            logService.WriteToLog(LOG_FILENAME, "OnCreate");
         }
 
 
@@ -50,10 +81,14 @@
             //handler.removeCallbacks(runnable);
 
             Toast.MakeText(this, "Service stopped", ToastLength.Long).Show();
+
+            logService.WriteToLog(LOG_FILENAME, "OnDestroy");
         }
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
+            logService.WriteToLog(LOG_FILENAME, "OnStartCommand");
+
             //TRICK to keep app runing
             return StartCommandResult.Sticky;
         }
@@ -68,6 +103,8 @@
             var alarmService = (AlarmManager) GetSystemService(AlarmService);
 
             alarmService.Set(AlarmType.ElapsedRealtime, SystemClock.ElapsedRealtime() + 100, restartServicePi);
+
+            logService.WriteToLog(LOG_FILENAME, "OnTaskRemoved");
         }
 
         private async void RunAction()
@@ -76,7 +113,9 @@
             double major = 0;
             double minor = 0;
             var identifier = "FCS";
-            BeaconManagerService.StartMonitoring(uuid, major, minor, identifier);
+            BeaconManagerService
+                .AddLocationPovider(LocationManagerService)
+                .StartMonitoring(uuid, major, minor, identifier);
         }
     }
 }
