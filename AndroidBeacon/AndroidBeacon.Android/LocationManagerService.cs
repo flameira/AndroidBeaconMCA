@@ -8,6 +8,7 @@
     using Android.Content.PM;
     using Android.Locations;
     using Android.OS;
+    using Android.Runtime;
     using Android.Support.V4.Content;
     using Android.Util;
 
@@ -27,7 +28,13 @@
         private HandlerThread _handlerThreadSingle;
         private bool _isRequestingLocationUpdates;
 
-
+        public LocationManagerService (IntPtr a, JniHandleOwnership b) : base (a, b)
+        {
+            _locationManager = (LocationManager) Application.Context.GetSystemService(Context.LocationService);
+         
+            _logService = new LogService();
+            _logService.WriteToLog(LogFilename, "Contructor");
+        }
         public LocationManagerService()
         {
             _locationManager = (LocationManager) Application.Context.GetSystemService(Context.LocationService);
