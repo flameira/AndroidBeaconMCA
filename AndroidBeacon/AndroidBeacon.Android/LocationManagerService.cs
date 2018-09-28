@@ -10,9 +10,8 @@
     using Android.OS;
     using Android.Support.V4.Content;
     using Android.Util;
-    using Object = Java.Lang.Object;
 
-    public class LocationManagerService : Object, ILocationListener
+    public class LocationManagerService : Java.Lang.Object, ILocationListener
     {
        
         private const long FiveSeconds = 5 * 1000;
@@ -177,29 +176,4 @@
         }
     }
 
-    public class AppLocationListener : ILocationListener
-    {
-        public void Dispose(){        }
-
-        public IntPtr Handle { get; set; }
-        public void OnLocationChanged(Location location)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnProviderDisabled(string provider)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnProviderEnabled(string provider)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnStatusChanged(string provider, Availability status, Bundle extras)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
