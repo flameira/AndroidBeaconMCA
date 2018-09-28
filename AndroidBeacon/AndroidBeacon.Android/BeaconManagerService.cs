@@ -36,6 +36,10 @@
 
 
         private LocationManagerService LocationManagerService;
+        private MCANotificationService notificationService;
+
+
+
 
 #if DEBUG
         public static int BEACON_LISTENER_TIME_IN_SECONDS = 20;
@@ -52,6 +56,7 @@
             _monitorNotifier = new MonitorNotifier();
             _rangeNotifier = new RangeNotifier();
             logService = new LogService();
+            notificationService = new MCANotificationService();
 
             InitializeService();
 
@@ -119,6 +124,8 @@
 
             Log.Debug("FLBEACON", "Stop Request Updates from Beacon");
             LocationManagerService.StopRequestLocationUpdates();
+            
+            notificationService.SendNotification("Beacon", "Exited Region");
 
             logService.WriteToLog(LOG_FILENAME, "ExitedRegion");
         }
@@ -132,6 +139,8 @@
 
             
             Log.Debug("FLBEACON", "Start Request Updates from Beacon");
+            notificationService.SendNotification("Beacon", "Entered Region");
+
             LocationManagerService.RequestLocationUpdates();
 
             logService.WriteToLog(LOG_FILENAME, "EnteredRegion");

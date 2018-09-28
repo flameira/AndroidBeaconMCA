@@ -9,6 +9,7 @@ namespace AndroidBeacon.Droid
     using Android.App;
     using Android.Content;
     using Android.OS;
+    using Android.Support.V4.App;
 
     public class MCANotificationService
     {
@@ -20,15 +21,11 @@ namespace AndroidBeacon.Droid
 
         public MCANotificationService()
         {
-            CreateNotificationChannel();
-        }
-
-        public NotificationManager GetNotificationManager()
-        {
             if (notificationManager == null)
-                notificationManager = (NotificationManager) Forms.Context.GetSystemService(Context.NotificationService);
+                notificationManager = (NotificationManager) Application.Context.GetSystemService(Context.NotificationService);
 
-            return notificationManager;
+            CreateNotificationChannel();
+
         }
 
 
@@ -36,10 +33,8 @@ namespace AndroidBeacon.Droid
         {
             //Send Notification
 
-            var builder = new Notification.Builder(Forms.Context).SetContentTitle(title).SetContentText(text)
-                .SetSmallIcon(Resource.Drawable.Icon_small).SetChannelId(CHANNEL_ID);
-
-            GetNotificationManager();
+          var builder = new NotificationCompat.Builder(Application.Context,CHANNEL_ID).SetContentTitle(title).SetContentText(text)
+                .SetSmallIcon(Resource.Drawable.Icon_small);
 
             try
             {
@@ -64,7 +59,6 @@ namespace AndroidBeacon.Droid
             channel.EnableVibration(true);
             channel.LockscreenVisibility = NotificationVisibility.Public;
 
-            GetNotificationManager();
             notificationManager.CreateNotificationChannel(channel);
         }
     }
