@@ -42,7 +42,7 @@
             {
                 if (_locationManagerService == null)
                 {
-                    _locationManagerService = new LocationManagerService(ApplicationContext);
+                    _locationManagerService = new LocationManagerService();
                 }
 
                 return _locationManagerService;

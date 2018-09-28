@@ -13,25 +13,20 @@ namespace AndroidBeacon.Views
     {
         ItemDetailViewModel viewModel;
 
-        public ItemDetailPage(ItemDetailViewModel viewModel)
+        public ItemDetailPage(Item item)
         {
             InitializeComponent();
-
-            BindingContext = this.viewModel = viewModel;
+            BindingContext = new ItemDetailViewModel (item);
+            
+            Title = item.Description;
         }
 
-        public ItemDetailPage()
+        protected override void OnAppearing ()
         {
-            InitializeComponent();
+            base.OnAppearing ();
 
-            var item = new Item
-            {
-                Text = "Item 1",
-                Description = "This is an item description."
-            };
-
-            viewModel = new ItemDetailViewModel(item);
-            BindingContext = viewModel;
+            (BindingContext as ItemDetailViewModel).LoadContent ();
         }
+        
     }
 }

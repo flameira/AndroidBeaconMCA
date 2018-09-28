@@ -1,12 +1,8 @@
 ﻿namespace AndroidBeacon.Views
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Models;
-    using Plugin.Geolocator;
-    using Plugin.Permissions;
-    using Plugin.Permissions.Abstractions;
     using Xamarin.Forms;
     using Xamarin.Forms.Xaml;
 
@@ -22,8 +18,8 @@
 
             MenuPages.Add((int) MenuItemType.Browse, (NavigationPage) Detail);
         }
-        
-       
+
+
         public async Task NavigateFromMenu(int id)
         {
             if (!MenuPages.ContainsKey(id))

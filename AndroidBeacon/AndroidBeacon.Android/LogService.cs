@@ -10,11 +10,12 @@ namespace AndroidBeacon.Droid
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using Services;
 
     /// <summary>
     ///     Log service.
     /// </summary>
-    public class LogService
+    public class LogService : ILogService
     {
         private readonly string diagnosticFileName = "DiagnosticData.zip";
         private readonly object logLock = new object();
@@ -37,22 +38,6 @@ namespace AndroidBeacon.Droid
             catch (Exception ex)
             {
                 throw ex;
-            }
-        }
-
-        public void DeleteOldLogFiles()
-        {
-            lock (logLock)
-            {
-                try
-                {
-                    var dir = new DirectoryInfo(logsDirectory);
-                    var logFiles = dir.GetFileSystemInfos().Where(f => f.Extension.Equals(".txt")); // get log files
-                    foreach (var file in logFiles.Where(f => f.CreationTime < DateTime.Now.AddMonths(-1)))
-                        file.Delete();
-                }
-                catch
-                {}
             }
         }
 
@@ -140,23 +125,24 @@ namespace AndroidBeacon.Droid
 
         public void WriteToLog(string fileName, string message)
         {
-            //lock (logLock)
-            //{
-            //    try
-            //    {
-            //        var filename = Path.Combine(logsDirectory,
-            //            fileName + "_" + DateTime.Today.ToString("yyyyMMdd") + ".txt");
-
-            //        using (var streamWriter = new StreamWriter(filename, true))
-            //        {
-            //            var logLine = DateTime.Now + "," + message;
-            //            streamWriter.WriteLine(logLine);
-            //        }
-            //    }
-            //    catch
-            //    {}
-            //}
             WriteToLogAsync(fileName, message);
+            WriteToLogAsync("MergedLogs", $"({fileName}) - {message}");
+        }
+
+        public void DeleteOldLogFiles()
+        {
+            lock (logLock)
+            {
+                try
+                {
+                    var dir = new DirectoryInfo(logsDirectory);
+                    var logFiles = dir.GetFileSystemInfos().Where(f => f.Extension.Equals(".txt")); // get log files
+                    foreach (var file in logFiles.Where(f => f.CreationTime < DateTime.Now.AddMonths(-1)))
+                        file.Delete();
+                }
+                catch
+                {}
+            }
         }
 
         public async Task WriteToLogAsync(string fileName, string message)

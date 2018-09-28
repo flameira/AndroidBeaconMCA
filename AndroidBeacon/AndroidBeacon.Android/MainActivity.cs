@@ -6,7 +6,6 @@
     using Android.Content.PM;
     using Android.OS;
     using Android.Runtime;
-    using nexus.protocols.ble;
     using Plugin.CurrentActivity;
     using Plugin.Permissions;
     using Xamarin.Forms;
@@ -17,6 +16,12 @@
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : FormsAppCompatActivity
     {
+
+        private LogService logService;
+
+        private static readonly string LOG_FILENAME = "MainActivity";
+
+
         private MCANotificationService mcaNotificationService;
 
         public MCANotificationService GetMCANotificationService()
@@ -43,7 +48,8 @@
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
-
+            
+            logService = new LogService();
 
             base.OnCreate(savedInstanceState);
 
@@ -51,20 +57,17 @@
 
             Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
-          
-            this.RequestPermissions(new []
-            {
-                Manifest.Permission.AccessFineLocation,
-                Manifest.Permission.BluetoothPrivileged,
-                
-            }, 0);
+
+            RequestPermissions(new[] {Manifest.Permission.AccessFineLocation, Manifest.Permission.BluetoothPrivileged},
+                0);
 
 
             GetMCANotificationService();
             mcaNotificationService.SendNotification("AndroidBeacon", "APP STARTED");
 
+            logService.WriteToLog(LOG_FILENAME, "APP STARTED");
+
             StartService(new Intent(this, typeof(AppService)));
-          
         }
     }
 }
