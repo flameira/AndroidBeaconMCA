@@ -2,6 +2,7 @@
 {
     using Android.App;
     using Android.Content;
+    using Android.OS;
     using Android.Util;
     using Android.Widget;
     using Java.Lang;
@@ -26,7 +27,11 @@
 
                     Toast.MakeText(context, "Received BroadCast intent!", ToastLength.Long).Show();
 
-                    context.StartService(new Intent(context, typeof(AppService)));
+                    if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+                        context.StartForegroundService(new Intent(context, typeof(AppService)));
+                    else
+                        context.StartService(new Intent(context, typeof(AppService)));
+
 
                     Log.Info(Tag, "Started from BroadCast");
                 }
