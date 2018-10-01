@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.wws" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.wws" android:installLocation="internalOnly">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="27" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -8,9 +8,21 @@
 	<uses-permission android:name="android.permission.BLUETOOTH" />
 	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 	<uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
-	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 	<uses-permission android:name="android.permission.CONTROL_LOCATION_UPDATES" />
 	<service android:name="com.wws.BackgroundService" android:exported="false" android:enabled="true" />
 	<application android:label="AdroidBeacon" />
+
+  <receiver android:enabled="true"
+            android:exported="true" 
+            android-permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:name=".AutoStart" >
+  
+    <intent-filter >
+      <action android:name="android.intent.action.BOOT_COMPLETED" />
+      <category android:name="android.intent.category.DEFAULT" />
+    </intent-filter>
+  </receiver>
 
 </manifest>

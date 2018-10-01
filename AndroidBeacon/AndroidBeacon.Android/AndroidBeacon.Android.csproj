@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppService.cs" />
+    <Compile Include="AutoStart.cs" />
     <Compile Include="helpers\BeaconRangedEventArgs.cs" />
     <Compile Include="helpers\extensions.cs" />
     <Compile Include="LocationManagerService.cs" />

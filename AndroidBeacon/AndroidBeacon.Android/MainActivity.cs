@@ -16,20 +16,17 @@
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : FormsAppCompatActivity
     {
+        private static readonly string LogFilename = "MainActivity";
+        private AutoStart _receiver;
+        private LogService _logService;
+        private MCANotificationService _mcaNotificationService;
 
-        private LogService logService;
-
-        private static readonly string LOG_FILENAME = "MainActivity";
-
-
-        private MCANotificationService mcaNotificationService;
-
-        public MCANotificationService GetMCANotificationService()
+        public MCANotificationService GetMcaNotificationService()
         {
-            if (mcaNotificationService == null)
-                mcaNotificationService = DependencyService.Get<MCANotificationService>();
+            if (_mcaNotificationService == null)
+                _mcaNotificationService = DependencyService.Get<MCANotificationService>();
 
-            return mcaNotificationService;
+            return _mcaNotificationService;
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions,
@@ -48,8 +45,9 @@
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
-            
-            logService = new LogService();
+
+            _logService = new LogService();
+            _receiver = new AutoStart();
 
             base.OnCreate(savedInstanceState);
 
@@ -62,12 +60,26 @@
                 0);
 
 
-            GetMCANotificationService();
-            mcaNotificationService.SendNotification("AndroidBeacon", "APP STARTED");
+            GetMcaNotificationService();
+            _mcaNotificationService.SendNotification("AndroidBeacon", "APP STARTED");
 
-            logService.WriteToLog(LOG_FILENAME, "APP STARTED");
+            _logService.WriteToLog(LogFilename, "APP STARTED");
 
             StartService(new Intent(this, typeof(AppService)));
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+            UnregisterReceiver(_receiver);
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            _receiver = new AutoStart();
+            RegisterReceiver(_receiver, new IntentFilter("android.intent.action.BOOT_COMPLETED"));
+
         }
     }
 }

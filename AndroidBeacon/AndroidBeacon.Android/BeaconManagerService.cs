@@ -137,10 +137,12 @@
             var message = new BeaconRangedEventArgs {Inside = true};
             OnBeaconRanged(message);
 
-            
-            Log.Debug("FLBEACON", "Start Request Updates from Beacon");
             notificationService.SendNotification("Beacon", "Entered Region");
 
+            Log.Debug("FLBEACON", "Get Last Location");
+            LocationManagerService.GetLastLocationFromDevice();
+           
+            Log.Debug("FLBEACON", "Start Request Updates from Beacon");
             LocationManagerService.RequestLocationUpdates();
 
             logService.WriteToLog(LOG_FILENAME, "EnteredRegion");
