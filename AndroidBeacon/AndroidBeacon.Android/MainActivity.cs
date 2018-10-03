@@ -65,7 +65,12 @@
 
             _logService.WriteToLog(LogFilename, "APP STARTED");
 
-            StartService(new Intent(this, typeof(AppService)));
+            if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+                StartForegroundService(new Intent(this, typeof(AppService)));
+            
+            else
+                StartService(new Intent(this, typeof(AppService)));
+
         }
 
         protected override void OnPause()

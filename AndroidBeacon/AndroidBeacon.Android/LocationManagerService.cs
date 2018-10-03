@@ -31,7 +31,6 @@
         public LocationManagerService (IntPtr a, JniHandleOwnership b) : base (a, b)
         {
             _locationManager = (LocationManager) Application.Context.GetSystemService(Context.LocationService);
-         
             _logService = new LogService();
             _logService.WriteToLog(LogFilename, "Contructor");
         }
@@ -110,12 +109,12 @@
                     {
                         StartRequestingLocationUpdates();
                         _isRequestingLocationUpdates = true;
+                    } else
+                    {
+                        _logService.WriteToLog(LogFilename, $"is already requesting location updates");
                     }
                 }
-                else
-                {
-                    _logService.WriteToLog(LogFilename, $"is already requesting location updates");
-                }
+               
             }
             catch (Exception ex)
             {
@@ -145,15 +144,13 @@
                 _handlerThread = null;
             }
 
-            _handlerThread = new HandlerThread("LocationLoggerThread", (int) ThreadPriority.Background);
-            _handlerThread.Start();
-
             Log.Info(Tag, $"Request location updates start");
             _logService.WriteToLog(LogFilename, $"Request location updates start");
 
             try
             {
-                _locationManager.RequestLocationUpdates(LocationManager.GpsProvider, FiveSeconds, 1, this);
+                _locationManager.RequestLocationUpdates(LocationManager.GpsProvider, 
+                    FiveSeconds, 1, this);
             }
             catch (Exception ex)
             {
@@ -165,21 +162,7 @@
         {
             Log.Info(Tag, $"Request location updates stop");
             _logService.WriteToLog(LogFilename, $"Request location updates stop");
-
             _locationManager.RemoveUpdates(this);
-            if (_handlerThread != null)
-            {
-                _handlerThread.Quit();
-                _handlerThread.Interrupt();
-                _handlerThread = null;
-            }
-
-            if (_handlerThreadSingle != null)
-            {
-                _handlerThreadSingle.Quit();
-                _handlerThreadSingle.Interrupt();
-                _handlerThreadSingle = null;
-            }
         }
     }
 

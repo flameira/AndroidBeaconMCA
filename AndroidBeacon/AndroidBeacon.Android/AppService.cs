@@ -3,6 +3,7 @@
     using Android.App;
     using Android.Content;
     using Android.OS;
+    using Android.Support.V4.App;
     using Android.Util;
     using Android.Widget;
     using Java.Lang;
@@ -18,7 +19,8 @@
         private static Runnable _runnable;
         private static readonly string Tag = "FLBEACON";
 
-      
+
+       
         private Handler _handler;
 
         private BeaconManagerService _beaconManagerService;
@@ -58,6 +60,10 @@
             logService.WriteToLog(LOG_FILENAME, "OnBind");
             return null;
         }
+        private static readonly string CHANNEL_ID = "location_notification";
+        internal static readonly string COUNT_KEY = "count";
+        private static readonly int NOTIFICATION_ID = 1000;
+
 
         public override void OnCreate()
         {
@@ -71,6 +77,20 @@
             _handler.PostDelayed(_runnable, 15000);
 
             logService.WriteToLog(LOG_FILENAME, "OnCreate");
+
+            if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O) {
+             
+                NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "ANDROID BEACON",NotificationImportance.Default);
+
+                ((NotificationManager) Application.Context.GetSystemService(Context.NotificationService))
+                    .CreateNotificationChannel(channel);
+
+                Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .SetContentTitle("Android Beacon is running in the background").SetContentText("Android Beacon is using background service").Build();
+                
+                StartForeground(101, notification);
+            }
         }
 
 
